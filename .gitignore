@@ -1,0 +1,49 @@
+# Node.js Modülleri
+node_modules/
+**/node_modules/
+package-lock.json
+yarn.lock
+
+# Log Dosyaları
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+debug.log*
+
+# Environment Dosyaları
+.env
+**/.env
+
+# Build ve Çıktı Dosyaları
+dist/
+build/
+upload/
+output/
+coverage/
+
+# IDE ve Editör Dosyaları
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Sistem Dosyaları
+.DS_Store
+Thumbs.db
+*.swp
+*.tmp
+
+# Çeşitli Geçici Dosyalar
+*.pdf
+*.tmp
+*.zip
+
+# React Build Dosyaları
+frontend/build/
+frontend/node_modules/
+
+# Backend Build Dosyaları
+patternBackend/backend/node_modules/
+patternBackend/backend/upload/
