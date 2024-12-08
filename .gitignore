@@ -12,6 +12,9 @@ yarn-debug.log*
 yarn-error.log*
 debug.log*
 
+# Google Cloud Credentials
+backend/credentials.json
+
 # Environment Dosyaları
 .env
 **/.env
