@@ -1,0 +1,128 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+
+.container {
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px 30px;
+    margin: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+
+
+input[type="password"] {
+    width: 100%;
+    margin: 5px 0 5px 0;
+    padding: 3px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+
+input[type="text2"] {
+    width: 100%;
+    padding: 3px;
+    margin: 5px 0 5px 0;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+
+.Toastify__toast--success {
+    background-color: #057232 !important;
+    color: #fff !important;
+    font-weight: bold;
+}
+
+
+input[type="text"],
+input[type="file"] {
+    width: 100%;
+    padding-block: 15px;
+    padding-left: 10px;
+    margin: 10px 0 10px 0;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+    transition: border 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="file"]:focus {
+    border: 1px solid #3498db;
+}
+
+
+button {
+    background-color: #3498db;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s;
+    margin-bottom: 10px;
+}
+
+button:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+
+.folder-list button {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+    background-color: #2ecc71;
+}
+
+.folder-list button:hover {
+    background-color: #27ae60;
+}
+
+
+.file-upload {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    text-align: center;
+}
+
+.file-upload h2 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 10px;
+}
