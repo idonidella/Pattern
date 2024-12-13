@@ -10,7 +10,12 @@ function Auth({ onAuthSuccess }) {
         const url = isSignUp ? 'http://localhost:5001/signup' : 'http://localhost:5001/signin';
         try {
             await axios.post(url, { username, password });
-            if (!isSignUp) onAuthSuccess(username);
+            if (isSignUp) {
+                alert('Kayıt başarılı! Lütfen giriş yapın.');
+                window.location.href = '/signin'; 
+            } else {
+                onAuthSuccess(username);
+            }
         } catch (err) {
             alert(err.response?.data || 'Bir hata oluştu.');
         }
