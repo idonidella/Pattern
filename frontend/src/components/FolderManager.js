@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-function FolderManager({ onSelectFolder }) {
+function FolderManager({ username, onSelectFolder }) {
     const [folders, setFolders] = useState([]);
     const [newFolder, setNewFolder] = useState('');
     const [selectedFolder, setSelectedFolder] = useState(null);
 
+    // Kullanıcının klasörlerini yükle
+    useEffect(() => {
+        axios.get(`http://localhost:5001/folders/${username}`)
+            .then(response => setFolders(response.data))
+            .catch(err => console.error('Klasörler yüklenemedi:', err));
+    }, [username]);
+
     const handleCreateFolder = () => {
         if (newFolder.trim() && !folders.includes(newFolder)) {
-            setFolders([...folders, newFolder]);
-            setNewFolder('');
+            axios.post(`http://localhost:5001/folders/${username}`, { folderName: newFolder })
+                .then(() => {
+                    setFolders([...folders, newFolder]);
+                    setNewFolder('');
+                })
+                .catch(err => alert(err.response?.data || 'Bir hata oluştu.'));
         }
     };
 
@@ -55,7 +67,7 @@ function FolderManager({ onSelectFolder }) {
                         key={index}
                         onClick={() => handleFolderClick(folder)}
                         style={{
-                            backgroundColor: selectedFolder === folder ? '#ff7675' : '#6c5ce7', // Seçilen klasör pembe
+                            backgroundColor: selectedFolder === folder ? '#ff7675' : '#6c5ce7',
                             color: '#fff',
                             padding: '12px 20px',
                             border: 'none',
