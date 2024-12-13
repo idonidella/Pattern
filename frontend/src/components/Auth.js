@@ -9,8 +9,8 @@ function Auth({ onAuthSuccess }) {
     const handleSubmit = async () => {
         const url = isSignUp ? 'http://localhost:5001/signup' : 'http://localhost:5001/signin';
         try {
-            const response = await axios.post(url, { username, password });
-            if (!isSignUp) onAuthSuccess(username); // Kullanıcı adını geri gönderiyoruz
+            await axios.post(url, { username, password });
+            if (!isSignUp) onAuthSuccess(username);
         } catch (err) {
             alert(err.response?.data || 'Bir hata oluştu.');
         }
@@ -18,7 +18,7 @@ function Auth({ onAuthSuccess }) {
 
     const handleToggle = () => {
         setIsSignUp(!isSignUp);
-        setUsername(''); 
+        setUsername('');
         setPassword('');
     };
 

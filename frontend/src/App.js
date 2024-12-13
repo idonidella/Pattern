@@ -79,7 +79,7 @@ function App() {
                     <FolderManager username={username} onSelectFolder={setSelectedFolder} />
                     {selectedFolder && (
                         <div className="file-upload">
-                            <FileUpload folderName={selectedFolder} />
+                            <FileUpload username={username} folderName={selectedFolder} />
                         </div>
                     )}
                 </>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-function FileUpload({ folderName }) {
+function FileUpload({ username, folderName }) {
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
 
@@ -9,43 +9,34 @@ function FileUpload({ folderName }) {
         const selectedFile = e.target.files[0];
         if (selectedFile) {
             setFile(selectedFile);
-            setPreviewUrl(URL.createObjectURL(selectedFile)); 
+            setPreviewUrl(URL.createObjectURL(selectedFile));
         }
     };
 
-    // Dosyayı yükle ve PDF oluştur
-    const handleUpload = async () => {
-        if (!file) {
-            alert('Lütfen bir dosya seçin.');
+    const handleUpload = () => {
+        if (!file || !folderName || !username) {
+            alert('Dosya, kullanıcı veya klasör adı eksik!');
             return;
         }
-
         const formData = new FormData();
         formData.append('image', file);
-
-        try {
-            const response = await axios.post(`http://localhost:5001/upload/${folderName}`, formData, {
-                responseType: 'blob',
+        axios
+            .post(`http://localhost:5001/upload/${username}/${folderName}`, formData)
+            .then(() => {
+                alert('Dosya başarıyla yüklendi.');
+                window.location.reload();
+            })
+            .catch((err) => {
+                console.error('Dosya yüklenirken hata oluştu:', err);
+                alert('Bir hata oluştu. Dosya yüklenemedi.');
             });
-
-            // PDF dosyasını indirmek için oluşturulan bağlantı
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'output.pdf');
-            document.body.appendChild(link);
-            link.click();
-            link.parentNode.removeChild(link);
-        } catch (error) {
-            alert('Bir hata oluştu. Dosya yüklenemedi.');
-            console.error(error);
-        }
     };
+
 
     return (
         <div style={{ textAlign: 'center', padding: '20px', borderRadius: '8px' }}>
             <h2 style={{ marginBottom: '10px' }}>
-                {folderName} - <span style={{ fontWeight: 'normal' }}>Dosya Yükle</span>
+                <span style={{ fontWeight: 'normal' }}>Dosya Yükle</span>
             </h2>
             <input type="file" accept="image/*" onChange={handleFileChange} />
             <br />

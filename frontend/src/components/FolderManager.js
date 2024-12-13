@@ -2,20 +2,22 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function FolderManager({ username, onSelectFolder }) {
-    const [folders, setFolders] = useState([]); 
-    const [newFolder, setNewFolder] = useState(''); 
-    const [selectedFolder, setSelectedFolder] = useState(null); // Seçilen klasör
-    const [files, setFiles] = useState([]); // Klasördeki PDF dosyaları
+    const [folders, setFolders] = useState([]);
+    const [newFolder, setNewFolder] = useState('');
+    const [selectedFolder, setSelectedFolder] = useState(null);
+    const [files, setFiles] = useState([]);
 
-    // Kullanıcının klasörlerini yükle
+
     useEffect(() => {
+        setSelectedFolder(null);
+        setFiles([]);
+        onSelectFolder(null);
         axios
             .get(`http://localhost:5001/folders/${username}`)
             .then((response) => setFolders(response.data))
             .catch((err) => console.error('Klasörler yüklenemedi:', err));
     }, [username]);
 
-    // Yeni klasör oluştur
     const handleCreateFolder = () => {
         if (newFolder.trim() && !folders.includes(newFolder)) {
             axios
@@ -28,13 +30,11 @@ function FolderManager({ username, onSelectFolder }) {
         }
     };
 
-    // Klasöre tıklandığında PDF dosyalarını yükle
     const handleFolderClick = (folder) => {
         setSelectedFolder(folder);
         onSelectFolder(folder);
-
         axios
-            .get(`http://localhost:5001/list-files/${folder}`)
+            .get(`http://localhost:5001/list-files/${username}/${folder}`)
             .then((response) => setFiles(response.data))
             .catch((err) => {
                 console.error('Dosyalar yüklenemedi:', err);
@@ -44,7 +44,6 @@ function FolderManager({ username, onSelectFolder }) {
 
     return (
         <div>
-            {/* Yeni Klasör Oluşturma */}
             <input
                 type="text"
                 placeholder="Yeni Klasör Adı"
@@ -75,37 +74,37 @@ function FolderManager({ username, onSelectFolder }) {
 
             {/* Klasör Listesi */}
             <div style={{ marginTop: '20px' }}>
-                {folders.map((folder, index) => (
-                    <button
-                        key={index}
-                        onClick={() => handleFolderClick(folder)}
-                        style={{
-                            margin: '10px',
-                            padding: '10px 15px',
-                            borderRadius: '6px',
-                            backgroundColor: selectedFolder === folder ? '#ff7675' : '#6c5ce7',
-                            color: '#fff',
-                            fontWeight: 'bold',
-                            border: 'none',
-                            cursor: 'pointer',
-                        }}
-                    >
-                        {folder}
-                    </button>
-                ))}
+                {folders.map((folder, index) => {
+                    const formattedFolderName = folder.charAt(0).toUpperCase() + folder.slice(1);
+                    return (
+                        <button
+                            key={index}
+                            onClick={() => handleFolderClick(folder)}
+                            style={{
+                                margin: '10px',
+                                padding: '10px 15px',
+                                borderRadius: '6px',
+                                backgroundColor: selectedFolder === folder ? '#ff7675' : '#6c5ce7',
+                                color: '#fff',
+                                fontWeight: 'bold',
+                                border: 'none',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            {formattedFolderName}
+                        </button>
+                    );
+                })}
             </div>
-
-            {/* Seçilen Klasördeki PDF Dosyaları */}
             {selectedFolder && (
                 <div style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '10px' }}>
-                        {selectedFolder} Klasörü - PDF Dosyaları
+                        {selectedFolder.charAt(0).toUpperCase() + selectedFolder.slice(1)} Klasörü - PDF Dosyaları
                     </h3>
                     <ul style={{ listStyleType: 'none', padding: 0 }}>
                         {files.length > 0 ? (
                             files.map((file, index) => {
-                                // Dosya ismini parçala ve sadece tarih kısmını al
-                                const displayName = file.name.split('_')[0] + '.pdf';
+                                const displayName = file.name.split('-').slice(0, 3).join('-') + '-' + file.name.split('-').slice(3, 5).join('-') + '.pdf';
                                 return (
                                     <li key={index} style={{ margin: '10px 0' }}>
                                         <a
@@ -118,7 +117,7 @@ function FolderManager({ username, onSelectFolder }) {
                                                 fontWeight: 'bold',
                                             }}
                                         >
-                                            → {displayName} {/* Görünür isim: tarih + uzantı */}
+                                            → {displayName}
                                         </a>
                                     </li>
                                 );
