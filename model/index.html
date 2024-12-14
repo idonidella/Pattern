@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MNIST Drawing</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Arka plan videosu */
+        #background-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+
+        .container {
+            text-align: center;
+            z-index: 1;
+        }
+
+        canvas {
+            border: 1px solid #fff;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+
+        .input-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .input-box {
+            width: 50px;
+            height: 50px;
+            font-size: 24px;
+            text-align: center;
+            border: 2px solid white;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+        }
+
+        .input-box.active {
+            border-color: yellow;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .buttons button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .confirm-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: yellow;
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <!-- Video arka plan -->
+    <video id="background-video" autoplay muted loop>
+        <source src="background.mp4" type="video/mp4">
+        Tarayıcınız video formatını desteklemiyor.
+    </video>
+
+    <div class="container">
+        <h1>Password Drawing</h1>
+        <canvas id="drawCanvas" width="280" height="280"></canvas>
+        <br>
+        <button onclick="clearCanvas()">Clear</button>
+        <button onclick="sendImage()">Predict</button>
+
+        <div class="input-container">
+            <input id="box1" class="input-box" readonly onclick="selectBox(1)">
+            <input id="box2" class="input-box" readonly onclick="selectBox(2)">
+            <input id="box3" class="input-box" readonly onclick="selectBox(3)">
+            <input id="box4" class="input-box" readonly onclick="selectBox(4)">
+        </div>
+
+        <div class="buttons">
+            <button onclick="clearCurrentInput()">Clear Available</button>
+            <button onclick="clearAllInputs()">Clear All</button>
+        </div>
+
+        <button class="confirm-button" onclick="confirmPassword()">Confirm 4-Digit Password</button>
+
+        <div class="result">
+            <p id="prediction"></p>
+            <p id="confidence"></p>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('drawCanvas');
+        const ctx = canvas.getContext('2d');
+        let drawing = false;
+        let activeBoxIndex = null;
+
+        // Başlangıç çizim işlevleri
+        canvas.addEventListener('mousedown', startDrawing);
+        canvas.addEventListener('mousemove', draw);
+        canvas.addEventListener('mouseup', stopDrawing);
+        canvas.addEventListener('mouseout', stopDrawing);
+
+        function startDrawing(e) {
+            drawing = true;
+            draw(e);
+        }
+
+        function stopDrawing() {
+            drawing = false;
+            ctx.beginPath();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.lineWidth = 15;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = 'white';
+            ctx.lineTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop);
+        }
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('prediction').innerText = '';
+            document.getElementById('confidence').innerText = '';
+        }
+
+        function selectBox(index) {
+            document.querySelectorAll('.input-box').forEach(box => box.classList.remove('active'));
+            activeBoxIndex = index;
+            document.getElementById(`box${index}`).classList.add('active');
+        }
+
+        function sendImage() {
+            if (!activeBoxIndex) {
+                alert('Lütfen bir kutu seçin!');
+                return;
+            }
+
+            const imgData = canvas.toDataURL('image/png');
+            const data = { image: imgData };
+
+            fetch('http://127.0.0.1:5000/recognize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                const prediction = data.prediction;
+                const confidence = data.confidence;
+                document.getElementById('prediction').innerText = `Tahmin: ${prediction}`;
+                document.getElementById('confidence').innerText = `Güven: ${confidence}`;
+                document.getElementById(`box${activeBoxIndex}`).value = prediction;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('prediction').innerText = 'Tahmin sırasında hata oluştu';
+            });
+        }
+
+        function clearCurrentInput() {
+            if (activeBoxIndex) {
+                document.getElementById(`box${activeBoxIndex}`).value = '';
+            }
+        }
+
+        function clearAllInputs() {
+            document.querySelectorAll('.input-box').forEach(box => {
+                box.value = '';
+                box.classList.remove('active');
+            });
+            activeBoxIndex = null;
+        }
+
+        function confirmPassword() {
+            const password = [
+                document.getElementById('box1').value,
+                document.getElementById('box2').value,
+                document.getElementById('box3').value,
+                document.getElementById('box4').value
+            ].join('');
+
+            if (password.length !== 4 || password.includes('')) {
+                alert('Lütfen tüm kutuları doldurun ve 4 haneli bir şifre oluşturun.');
+            } else {
+                alert(`Şifre Onaylandı: ${password}`);
+            }
+        }
+    </script>
+</body>
+</html>
