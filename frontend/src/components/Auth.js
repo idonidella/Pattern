@@ -72,7 +72,7 @@ function Auth({ onAuthSuccess }) {
                             fontWeight: 'bold',
                         }}
                     >
-                        Kayıt Ol
+                        Sign Up
                     </span>
                 </p>
             ) : (

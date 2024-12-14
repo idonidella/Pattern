@@ -50,3 +50,6 @@ frontend/node_modules/
 # Backend Build Dosyaları
 patternBackend/backend/node_modules/
 patternBackend/backend/upload/
+
+.user.txt
+**.user.txt

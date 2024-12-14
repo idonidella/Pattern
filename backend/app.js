@@ -106,11 +106,8 @@ app.post('/upload/:username/:folderName', upload.single('image'), async (req, re
 
         // Tarih formatını ve saat-dakika-saniye ekleyerek benzersiz dosya adı oluştur
         const now = new Date();
-        const formattedDate = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1)
-            .toString()
-            .padStart(2, '0')}-${now.getFullYear()}`;
-        const formattedTime = `${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}`;
-        // Dosya adını tarih + saat-dakika formatında oluştur
+        const formattedDate = `${now.getDate().toString().padStart(2, '0')}-${(now.getMonth() + 1).toString().padStart(2, '0')}-${now.getFullYear()}`;
+        const formattedTime = `${now.getHours().toString().padStart(2, '0')}-${now.getMinutes().toString().padStart(2, '0')}-${now.getSeconds().toString().padStart(2, '0')}`;
         const fileName = `${formattedDate}-${formattedTime}.pdf`;
 
         // PDF oluşturma
@@ -123,8 +120,14 @@ app.post('/upload/:username/:folderName', upload.single('image'), async (req, re
         pdfDoc.end();
 
         writeStream.on('finish', () => {
-            res.status(200).send('PDF created successfully.');
             fs.unlinkSync(filePath); // Geçici dosyayı sil
+            // Dosyayı doğrudan indirmek için
+            res.download(pdfPath, fileName, (err) => {
+                if (err) {
+                    console.error('Download Error:', err);
+                    res.status(500).send('File download failed.');
+                }
+            });
         });
     } catch (err) {
         console.error('Error:', err);

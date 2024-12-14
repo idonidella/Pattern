@@ -62,7 +62,7 @@ function FileUpload({ username, folderName }) {
                     cursor: 'pointer',
                 }}
             >
-                Download as PDF
+                Upload as PDF
             </button>
         </div>
     );
