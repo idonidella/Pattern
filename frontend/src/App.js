@@ -12,7 +12,6 @@ function App() {
     const [selectedFolder, setSelectedFolder] = useState(null);
     const [showProfile, setShowProfile] = useState(false);
 
-
     useEffect(() => {
         const savedUser = localStorage.getItem('username');
         if (savedUser) {

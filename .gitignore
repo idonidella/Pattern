@@ -51,5 +51,21 @@ frontend/node_modules/
 patternBackend/backend/node_modules/
 patternBackend/backend/upload/
 
+# Python Sanal Ortamı (venv)
+venv/
+**/venv/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Model İçindeki Python Sanal Ortamı ve Dosyaları
+model/venv/
+model/__pycache__/
+model/**/*.pyc
+model/**/*.pyo
+model/**/*.pyd
+
+# Kullanıcı Dosyaları
 .user.txt
 **.user.txt

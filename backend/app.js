@@ -43,10 +43,11 @@ app.post('/signup', (req, res) => {
     const userData = `${username}:${password}\n`;
 
     fs.appendFile(USERS_FILE, userData, (err) => {
-        if (err) return res.status(500).send('Server error.User could not be registered.');
-        res.status(200).send('Login successful.');
+        if (err) return res.status(500).send('Server error. User could not be registered.');
+        res.status(200).json({ message: 'Signup successful.' });
     });
 });
+
 
 app.get('/folders/:username', (req, res) => {
     const { username } = req.params;
