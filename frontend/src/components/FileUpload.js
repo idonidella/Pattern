@@ -15,7 +15,7 @@ function FileUpload({ username, folderName }) {
 
     const handleUpload = () => {
         if (!file || !folderName || !username) {
-            alert('Dosya, kullanıcı veya klasör adı eksik!');
+            alert('File is missing!');
             return;
         }
         const formData = new FormData();
@@ -23,12 +23,12 @@ function FileUpload({ username, folderName }) {
         axios
             .post(`http://localhost:5001/upload/${username}/${folderName}`, formData)
             .then(() => {
-                alert('Dosya başarıyla yüklendi.');
+                alert('File uploaded successfully.');
                 window.location.reload();
             })
             .catch((err) => {
-                console.error('Dosya yüklenirken hata oluştu:', err);
-                alert('Bir hata oluştu. Dosya yüklenemedi.');
+                console.error('An error occurred while uploading the file.', err);
+                alert('An error occurred, the file could not be loaded.');
             });
     };
 
@@ -36,13 +36,13 @@ function FileUpload({ username, folderName }) {
     return (
         <div style={{ textAlign: 'center', padding: '20px', borderRadius: '8px' }}>
             <h2 style={{ marginBottom: '10px' }}>
-                <span style={{ fontWeight: 'normal' }}>Dosya Yükle</span>
+                <span style={{ fontWeight: 'normal' }}>Upload File</span>
             </h2>
             <input type="file" accept="image/*" onChange={handleFileChange} />
             <br />
             {previewUrl && (
                 <div style={{ marginTop: '20px' }}>
-                    <p style={{ marginBottom: '5px' }}>Seçilen Görsel:</p>
+                    <p style={{ marginBottom: '5px' }}>Selected File:</p>
                     <img
                         src={previewUrl}
                         alt="Preview"
@@ -62,7 +62,7 @@ function FileUpload({ username, folderName }) {
                     cursor: 'pointer',
                 }}
             >
-                Yükle ve PDF İndir
+                Download as PDF
             </button>
         </div>
     );

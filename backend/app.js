@@ -25,26 +25,26 @@ const USERS_FILE = path.join(__dirname, 'users.txt');
 
 app.post('/signin', (req, res) => {
     const { username, password } = req.body;
-    if (!username || !password) return res.status(400).send('Kullanıcı adı ve şifre gereklidir.');
+    if (!username || !password) return res.status(400).send('Username and password required.');
 
     fs.readFile(USERS_FILE, 'utf8', (err, data) => {
-        if (err) return res.status(500).send('Sunucu hatası.');
+        if (err) return res.status(500).send('Server error.');
         const users = data.split('\n');
         const isValidUser = users.some((line) => line === `${username}:${password}`);
-        if (isValidUser) res.status(200).json({ message: 'Giriş başarılı.', username });
-        else res.status(401).send('Kullanıcı adı veya şifre hatalı.');
+        if (isValidUser) res.status(200).json({ message: 'Login successful.', username });
+        else res.status(401).send('Username and password is incorrect.');
     });
 });
 
 app.post('/signup', (req, res) => {
     const { username, password } = req.body;
-    if (!username || !password) return res.status(400).send('Kullanıcı adı ve şifre gereklidir.');
+    if (!username || !password) return res.status(400).send('Username and password required.');
 
     const userData = `${username}:${password}\n`;
 
     fs.appendFile(USERS_FILE, userData, (err) => {
-        if (err) return res.status(500).send('Sunucu hatası: Kullanıcı kaydedilemedi.');
-        res.status(200).send('Kayıt başarılı.');
+        if (err) return res.status(500).send('Server error.User could not be registered.');
+        res.status(200).send('Login successful.');
     });
 });
 
@@ -70,10 +70,10 @@ app.post('/folders/:username', (req, res) => {
     const newFolderPath = path.join(userFolderPath, folderName);
 
     if (!fs.existsSync(userFolderPath)) fs.mkdirSync(userFolderPath, { recursive: true });
-    if (fs.existsSync(newFolderPath)) return res.status(400).send('Bu klasör zaten mevcut.');
+    if (fs.existsSync(newFolderPath)) return res.status(400).send('This folder already exists.');
 
     fs.mkdirSync(newFolderPath);
-    res.status(200).send('Klasör başarıyla oluşturuldu.');
+    res.status(200).send('Folder created successfully.');
 });
 
 
@@ -85,7 +85,7 @@ app.post('/upload/:username/:folderName', upload.single('image'), async (req, re
     const { username, folderName } = req.params;
 
     try {
-        if (!req.file) return res.status(400).send('Dosya yüklenmedi.');
+        if (!req.file) return res.status(400).send('Folder could not be loaded.');
 
         const filePath = req.file.path;
 
@@ -99,7 +99,7 @@ app.post('/upload/:username/:folderName', upload.single('image'), async (req, re
 
         if (!detections || detections.length === 0) {
             fs.unlinkSync(filePath); // Dosyayı sil
-            return res.status(400).send('Metin bulunamadı.');
+            return res.status(400).send('Text could not be found.');
         }
 
         const textContent = detections[0].description; // OCR ile algılanan metin
@@ -123,12 +123,12 @@ app.post('/upload/:username/:folderName', upload.single('image'), async (req, re
         pdfDoc.end();
 
         writeStream.on('finish', () => {
-            res.status(200).send('PDF başarıyla oluşturuldu.');
+            res.status(200).send('PDF created successfully.');
             fs.unlinkSync(filePath); // Geçici dosyayı sil
         });
     } catch (err) {
-        console.error('Hata:', err);
-        res.status(500).send('Sunucu hatası.');
+        console.error('Error:', err);
+        res.status(500).send('Server error.');
     }
 });
 
@@ -146,7 +146,7 @@ app.get('/list-files/:username/:folderName', (req, res) => {
         }));
         res.status(200).json(files);
     } else {
-        res.status(404).send('Klasör bulunamadı.');
+        res.status(404).send('File could not be found.');
     }
 });
 
@@ -157,5 +157,5 @@ app.use('/user_data', express.static(path.join(__dirname, 'user_data')));
 
 // Sunucu başlatma
 app.listen(port, () => {
-    console.log(`Sunucu http://localhost:${port} adresinde çalışıyor.`);
+    console.log(`Server works on http://localhost:${port}`);
 });

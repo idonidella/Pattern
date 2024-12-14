@@ -15,7 +15,7 @@ function FolderManager({ username, onSelectFolder }) {
         axios
             .get(`http://localhost:5001/folders/${username}`)
             .then((response) => setFolders(response.data))
-            .catch((err) => console.error('Klasörler yüklenemedi:', err));
+            .catch((err) => console.error('Could not upload the file:', err));
     }, [username]);
 
     const handleCreateFolder = () => {
@@ -26,7 +26,7 @@ function FolderManager({ username, onSelectFolder }) {
                     setFolders([...folders, newFolder]);
                     setNewFolder('');
                 })
-                .catch((err) => alert(err.response?.data || 'Bir hata oluştu.'));
+                .catch((err) => alert(err.response?.data || 'An error occured'));
         }
     };
 
@@ -37,7 +37,7 @@ function FolderManager({ username, onSelectFolder }) {
             .get(`http://localhost:5001/list-files/${username}/${folder}`)
             .then((response) => setFiles(response.data))
             .catch((err) => {
-                console.error('Dosyalar yüklenemedi:', err);
+                console.error('Could not upload the file:', err);
                 setFiles([]);
             });
     };
@@ -46,7 +46,7 @@ function FolderManager({ username, onSelectFolder }) {
         <div>
             <input
                 type="text"
-                placeholder="Yeni Klasör Adı"
+                placeholder="New Folder Name"
                 value={newFolder}
                 onChange={(e) => setNewFolder(e.target.value)}
                 style={{
@@ -69,7 +69,7 @@ function FolderManager({ username, onSelectFolder }) {
                     marginTop: '20px',
                 }}
             >
-                Klasör Oluştur
+                Create Folder
             </button>
 
             {/* Klasör Listesi */}
@@ -99,7 +99,7 @@ function FolderManager({ username, onSelectFolder }) {
             {selectedFolder && (
                 <div style={{ marginTop: '20px' }}>
                     <h3 style={{ marginBottom: '10px' }}>
-                        {selectedFolder.charAt(0).toUpperCase() + selectedFolder.slice(1)} Klasörü - PDF Dosyaları
+                        {selectedFolder.charAt(0).toUpperCase() + selectedFolder.slice(1)} Files - PDF Files
                     </h3>
                     <ul style={{ listStyleType: 'none', padding: 0 }}>
                         {files.length > 0 ? (
@@ -123,7 +123,7 @@ function FolderManager({ username, onSelectFolder }) {
                                 );
                             })
                         ) : (
-                            <li>Bu klasörde henüz dosya yok.</li>
+                            <li>There's no file in this folder.</li>
                         )}
                     </ul>
                 </div>

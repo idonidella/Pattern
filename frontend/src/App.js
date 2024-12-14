@@ -25,7 +25,7 @@ function App() {
         setUsername(user);
         setIsAuthenticated(true);
         localStorage.setItem('username', user);
-        toast.success('Giriş başarılı!', {
+        toast.success('Login successfully!', {
             position: 'top-right',
             autoClose: 3000,
         });
@@ -36,7 +36,7 @@ function App() {
         setIsAuthenticated(false);
         setUsername('');
         setShowProfile(false);
-        toast.info('Çıkış yapıldı.', {
+        toast.info('Logged out successfully!', {
             position: 'top-right',
             autoClose: 3000,
         });
@@ -58,19 +58,19 @@ function App() {
             {isAuthenticated ? (
                 <>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h1 style={{ marginLeft: 80 }}>Klasör Yönetimi</h1>
+                        <h1 style={{ marginLeft: 80 }}>Folder Management</h1>
                         <div style={{ position: 'relative' }}>
                             <button
                                 onClick={() => setShowProfile(!showProfile)}
                                 className="profile-button"
                             >
-                                Profil
+                                Profile
                             </button>
                             {showProfile && (
                                 <div className="profile-dropdown">
-                                    <p>Kullanıcı: {username}</p>
+                                    <p>User: {username}</p>
                                     <button onClick={handleLogout} className="logout-button">
-                                        Çıkış Yap
+                                        Log out
                                     </button>
                                 </div>
                             )}

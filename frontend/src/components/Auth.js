@@ -11,13 +11,13 @@ function Auth({ onAuthSuccess }) {
         try {
             await axios.post(url, { username, password });
             if (isSignUp) {
-                alert('Kayıt başarılı! Lütfen giriş yapın.');
+                alert('Registration successful. Please log in.');
                 window.location.href = '/signin'; 
             } else {
                 onAuthSuccess(username);
             }
         } catch (err) {
-            alert(err.response?.data || 'Bir hata oluştu.');
+            alert(err.response?.data || 'An error has occured.');
         }
     };
 
@@ -29,19 +29,19 @@ function Auth({ onAuthSuccess }) {
 
     return (
         <div style={{ marginTop: '50px', textAlign: 'center' }}>
-            <h1>{isSignUp ? 'Kayıt Ol' : 'Giriş Yap'}</h1>
+            <h1>{isSignUp ? 'Register' : 'Login'}</h1>
             <div style={{ width: '100%', maxWidth: '400px', margin: 'auto' }}>
                 <input
                     style={{ width: "100%", height: 32 }}
                     type="text2"
-                    placeholder="Kullanıcı Adı"
+                    placeholder="Username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 <input
                     style={{ width: "100%", height: 32 }}
                     type="password"
-                    placeholder="Şifre"
+                    placeholder="Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
@@ -58,13 +58,13 @@ function Auth({ onAuthSuccess }) {
                     cursor: 'pointer',
                 }}
             >
-                {isSignUp ? 'Kayıt Ol' : 'Giriş Yap'}
+                {isSignUp ? 'Register' : 'Login'}
             </button>
 
             {/* Koşula bağlı metin */}
             {!isSignUp ? (
                 <p style={{ cursor: 'pointer', marginTop: '10px', fontSize: '0.9rem' }}>
-                    Hesabın yok mu?{' '}
+                    You don't have an account?{' '}
                     <span
                         onClick={handleToggle}
                         style={{
@@ -77,7 +77,7 @@ function Auth({ onAuthSuccess }) {
                 </p>
             ) : (
                 <p style={{ cursor: 'pointer', marginTop: '10px', fontSize: '0.9rem' }}>
-                    Zaten hesabın var mı?{' '}
+                    You already have an account??{' '}
                     <span
                         onClick={handleToggle}
                         style={{
@@ -85,7 +85,7 @@ function Auth({ onAuthSuccess }) {
                             fontWeight: 'bold',
                         }}
                     >
-                        Giriş Yap
+                        Login
                     </span>
                 </p>
             )}
